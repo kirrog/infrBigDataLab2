@@ -14,6 +14,8 @@ COPY ./tests ./tests
 
 #RUN pwd
 #RUN ls -alh
-#CMD ["dvc", "repro"]
+
 #RUN python -m unittest ./tests/tests.py
 #RUN python -m dvc repro
+
+CMD ["python", "-m", "src.db_controller"]

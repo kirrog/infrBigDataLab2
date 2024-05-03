@@ -1,3 +1,13 @@
+version: '3.8'
 services:
   app:
     build: .
+    depends_on:
+      - "cassandra_base"
+    restart: always
+  cassandra_base:
+    image: cassandra:latest
+    container_name: cassandra
+    hostname: cassandra
+    ports:
+      - "9042:9042"
