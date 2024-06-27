@@ -4,7 +4,7 @@ import pandas
 import requests
 from sklearn.pipeline import Pipeline
 
-from main import app
+from main import app, db_serv
 from src.predict import Predictor
 from src.preprocess import Preprocessor
 from src.train import Trainer
@@ -60,6 +60,36 @@ class ApiTest(unittest.TestCase):
         local_app.config.update({"TESTING": True})
         test_client = app.test_client()
 
-        r = test_client.get('http://localhost:5000/')
+        r = test_client.get('http://localhost:5555/')
         result = r.text
         self.assertEqual(result, "Flask is running!")
+
+    def test_database_connection(self):
+        local_db_serv = db_serv
+        res = local_db_serv.check_readability()
+        self.assertEqual(len(res), 12)
+
+    def test_api_predict(self):
+        local_app = app
+        local_app.config.update({"TESTING": True})
+        test_client = app.test_client()
+
+        r_before = test_client.post('http://localhost:5555/get_last')
+
+        data_for_prediction = {
+            "area": 13.84,
+            "asymmetry_coeff": 3.379,
+            "compactness": 0.8955,
+            "kernel_groove": 13.94,
+            "kernel_length": 4.805,
+            "kernel_width": 5.324,
+            "perimeter": 2.259,
+            "prediction": 3
+        }
+
+        response = test_client.post('http://localhost:5555/predict', json=data_for_prediction)
+
+        r_after = test_client.post('http://localhost:5555/get_last')
+
+        self.assertEqual(len(r_before.json) + 1, len(r_after.json))
+        self.assertEqual(int(response.text), data_for_prediction["prediction"])

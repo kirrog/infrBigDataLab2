@@ -25,7 +25,7 @@ pipeline {
             steps {
                 withCredentials([usernamePassword(credentialsId: 'docker_hub', passwordVariable: 'docker_hub_pw', usernameVariable: 'docker_hub_us')]) {
                     sh "docker login -u ${env.docker_hub_us} -p ${env.docker_hub_pw}"
-                    sh 'docker push kirrog76/infr_big_data:latest'
+                    sh 'docker push kirrog76/infr_big_data:v1'
                 }
 //                 sh 'docker login -u $docker_hub_us -p $docker_hub_pw'
 //                 sh 'docker push kirrog76/infr_big_data'
@@ -40,9 +40,11 @@ pipeline {
             steps {
                 withCredentials([usernamePassword(credentialsId: 'docker_hub', passwordVariable: 'docker_hub_pw', usernameVariable: 'docker_hub_us')]) {
                     sh "docker login -u ${env.docker_hub_us} -p ${env.docker_hub_pw}"
-                    sh 'docker pull kirrog76/infr_big_data'
+                    sh 'docker pull kirrog76/infr_big_data:v1'
                 }
-                sh 'docker run kirrog76/infr_big_data sh -c "python -m unittest tests.tests"'
+                sh 'docker compose up -d -f docker-compose_jenkins.yml'
+                sleep time: 240, unit: 'SECONDS'
+                sh 'docker compose exec web-app bash -c "python -m unittest tests.tests"'
 //                 sh 'docker login -u $docker_hub_us -p $docker_hub_pw'
 //                 sh 'docker pull kirrog76/infr_big_data'
 //                 sh 'docker run kirrog76/infr_big_data sh -c "python -m main; python -m unittest tests.tests"'

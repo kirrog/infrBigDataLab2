@@ -27,7 +27,7 @@ services:
 #      - CASSANDRA_DATACENTER=datacenter1
 
   web-app:
-    build: .
+    image: kirrog76/infr_big_data:v1
     restart: on-failure
     environment:
       - CASSANDRA_SEEDS=cassandra-node1 #,cassandra-node2,cassandra-node3

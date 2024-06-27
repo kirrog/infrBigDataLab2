@@ -4,7 +4,7 @@ COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
 COPY ./dvc.yaml ./dvc.yaml
-COPY ./data/seeds.csv ./data/
+#COPY ./data/seeds.csv ./data/
 #COPY ./data/test_data.csv ./data/
 #COPY ./data/train_data.csv ./data/
 #COPY ./data/validation_data.csv ./data/
