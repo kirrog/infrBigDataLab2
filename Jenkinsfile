@@ -43,6 +43,7 @@ pipeline {
                     sh 'docker pull kirrog76/infr_big_data:v1'
                 }
                 sh 'docker compose up -d -f docker-compose_jenkins.yml'
+                sleep time: 240, unit: 'SECONDS'
                 sh 'docker compose exec web-app bash -c "python -m unittest tests.tests"'
 //                 sh 'docker login -u $docker_hub_us -p $docker_hub_pw'
 //                 sh 'docker pull kirrog76/infr_big_data'
