@@ -1,12 +1,12 @@
 from cassandra.cluster import NoHostAvailable
 from flask import Flask, request
 
-from src.database_service import run_cassandra_check
+from src.database_service import DatabaseService
 from src.loggers import create_logger
 from src.predict import Predictor
+from src.seed_data import SeedData
 
 cstm_logger = create_logger(__name__)
-
 
 app = Flask(__name__)
 
@@ -20,28 +20,27 @@ def check():
 def predict_by_model():
     data = request.json
     model = Predictor()
-    area = float(data["area"])
-    perimeter = float(data["perimeter"])
-    compactness = float(data["compactness"])
-    kernel_length = float(data["kernel_length"])
-    kernel_width = float(data["kernel_width"])
-    asymmetry_coeff = float(data["asymmetry_coeff"])
-    kernel_groove = float(data["kernel_groove"])
-    floats = [[area, perimeter,
-               compactness, kernel_length,
-               kernel_width, asymmetry_coeff,
-               kernel_groove]]
-    y_result_data = model.predict_by_model(floats)
-    cstm_logger.info(y_result_data)
-    return f'{y_result_data}'
+    seed_data_instance = SeedData(data)
+    floats = [seed_data_instance.return_floats()]
+    y_result_data = int(model.predict_by_model(floats)[0])
+    cstm_logger.warning(f"Prediction result is: {y_result_data}")
+    seed_data_instance.set_prediction(y_result_data)
+    db_serv.save_seed_data(seed_data_instance)
+    return f'Prediction: {y_result_data}'
+
+
+@app.route('/get_last', methods=['POST'])
+def get_last_seed_data():
+    return [x.__dict__ for x in db_serv.get_last_seeds_data()]
 
 
 if __name__ == '__main__':
     cstm_logger.info("Check connect ability")
     try:
-        res = run_cassandra_check()
+        db_serv = DatabaseService(cstm_logger)
+        res = db_serv.check_readability()
         cstm_logger.exception(f"Logger Successfully connect to cassandra. Data: {res}")
     except NoHostAvailable as e:
         cstm_logger.exception(f"Can't connect to cassandra: {e}")
         exit(1)
-    app.run(debug=True)
+    app.run(debug=True, port=5555, host="0.0.0.0")

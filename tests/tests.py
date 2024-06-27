@@ -60,6 +60,6 @@ class ApiTest(unittest.TestCase):
         local_app.config.update({"TESTING": True})
         test_client = app.test_client()
 
-        r = test_client.get('http://localhost:5000/')
+        r = test_client.get('http://localhost:5555/')
         result = r.text
         self.assertEqual(result, "Flask is running!")
