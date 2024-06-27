@@ -1,5 +1,6 @@
 from flask import Flask, request
 
+from src.database_service import run_cassandra_check
 from src.loggers import create_logger
 from src.predict import Predictor
 
@@ -34,4 +35,11 @@ def predict_by_model():
 
 
 if __name__ == '__main__':
+    cstm_logger.info("Check connect ability")
+    try:
+        res = run_cassandra_check()
+        cstm_logger.info(f"Successfully connect to cassandra. Data: {res}")
+    except Exception as e:
+        cstm_logger.exception(f"Can connect to cassandra: {e}")
+        exit(1)
     app.run(debug=True)

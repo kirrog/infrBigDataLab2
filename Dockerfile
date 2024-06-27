@@ -15,6 +15,6 @@ COPY ./main.py ./main.py
 
 #RUN pwd
 #RUN ls -alh
-#CMD ["dvc", "repro"]
+CMD ["python", "main.py"]
 #RUN python -m unittest ./tests/tests.py
 #RUN python -m dvc repro
