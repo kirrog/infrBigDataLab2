@@ -9,6 +9,14 @@ from src.seed_data import SeedData
 cstm_logger = create_logger(__name__)
 
 app = Flask(__name__)
+cstm_logger.info("Check connect ability")
+try:
+    db_serv = DatabaseService(cstm_logger)
+    res = db_serv.check_readability()
+    cstm_logger.exception(f"Logger Successfully connect to cassandra. Data: {res}")
+except NoHostAvailable as e:
+    cstm_logger.exception(f"Can't connect to cassandra: {e}")
+    exit(1)
 
 
 @app.route('/')
@@ -26,7 +34,7 @@ def predict_by_model():
     cstm_logger.warning(f"Prediction result is: {y_result_data}")
     seed_data_instance.set_prediction(y_result_data)
     db_serv.save_seed_data(seed_data_instance)
-    return f'Prediction: {y_result_data}'
+    return f'{y_result_data}'
 
 
 @app.route('/get_last', methods=['POST'])
@@ -35,12 +43,4 @@ def get_last_seed_data():
 
 
 if __name__ == '__main__':
-    cstm_logger.info("Check connect ability")
-    try:
-        db_serv = DatabaseService(cstm_logger)
-        res = db_serv.check_readability()
-        cstm_logger.exception(f"Logger Successfully connect to cassandra. Data: {res}")
-    except NoHostAvailable as e:
-        cstm_logger.exception(f"Can't connect to cassandra: {e}")
-        exit(1)
     app.run(debug=True, port=5555, host="0.0.0.0")
