@@ -1,3 +1,4 @@
+from cassandra.cluster import NoHostAvailable
 from flask import Flask, request
 
 from src.database_service import run_cassandra_check
@@ -5,6 +6,7 @@ from src.loggers import create_logger
 from src.predict import Predictor
 
 cstm_logger = create_logger(__name__)
+
 
 app = Flask(__name__)
 
@@ -38,8 +40,8 @@ if __name__ == '__main__':
     cstm_logger.info("Check connect ability")
     try:
         res = run_cassandra_check()
-        cstm_logger.info(f"Successfully connect to cassandra. Data: {res}")
-    except Exception as e:
-        cstm_logger.exception(f"Can connect to cassandra: {e}")
+        cstm_logger.exception(f"Logger Successfully connect to cassandra. Data: {res}")
+    except NoHostAvailable as e:
+        cstm_logger.exception(f"Can't connect to cassandra: {e}")
         exit(1)
     app.run(debug=True)
