@@ -1,6 +1,9 @@
 import pandas as pd
 
+from src.loggers import create_logger
 from src.utils import save_train_data, save_valid_data, save_test_data
+
+cstm_logger = create_logger(__name__)
 
 
 class Preprocessor:

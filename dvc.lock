@@ -37,8 +37,8 @@ stages:
       size: 7732
     - path: src/train.py
       hash: md5
-      md5: dc07d0d07ed9e7e7b320bc41333b9adb
-      size: 1886
+      md5: a6309ddfd34b7ba9e364d14c3f059ad2
+      size: 1690
     outs:
     - path: experiments/svc/metrics.json
       hash: md5
@@ -46,7 +46,7 @@ stages:
       size: 38
     - path: experiments/svc/model.pkl
       hash: md5
-      md5: abc0a47d59109a3948de1a9a8472ce53
+      md5: 41710775ab6caeb4ed468315c1f4ad6e
       size: 1322
   predict:
     cmd: python -m src.predict
@@ -57,7 +57,7 @@ stages:
       size: 1032
     - path: experiments/svc/model.pkl
       hash: md5
-      md5: abc0a47d59109a3948de1a9a8472ce53
+      md5: 41710775ab6caeb4ed468315c1f4ad6e
       size: 1322
     - path: src/predict.py
       hash: md5

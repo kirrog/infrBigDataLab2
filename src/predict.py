@@ -1,6 +1,9 @@
 import argparse
 
+from src.loggers import create_logger
 from src.utils import load_model, load_valid_data, split2x_y
+
+cstm_logger = create_logger(__name__)
 
 
 class Predictor:
@@ -17,10 +20,10 @@ def start_predict_process(interactive_mod=False):
     model = Predictor()
     x_data, y_data = split2x_y(load_valid_data())
     y_results = model.predict_by_model(x_data)
-    print("Right")
-    print(y_data)
-    print("Predicted")
-    print(y_results)
+    cstm_logger.info("Right")
+    cstm_logger.info(y_data)
+    cstm_logger.info("Predicted")
+    cstm_logger.info(y_results)
     if interactive_mod:
         while True:
             text_area = float(input("Enter Area value in range {10.59 - 21.18}: "))
@@ -35,7 +38,7 @@ def start_predict_process(interactive_mod=False):
                        text_kernel_width, text_asymmetry_coeff,
                        text_kernel_groove]]
             y_result_data = model.predict_by_model(floats)
-            print(y_result_data)
+            cstm_logger.info(y_result_data)
             stop = input("Stop: ")
             if stop != "":
                 break

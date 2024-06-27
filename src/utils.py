@@ -3,7 +3,11 @@ from pathlib import Path
 
 import pandas as pd
 
+from src.loggers import create_logger
+
 path2models = Path("./experiments")
+
+cstm_logger = create_logger(__name__)
 
 
 def load_model(path: str = "svc"):

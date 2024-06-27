@@ -6,7 +6,10 @@ from sklearn.pipeline import make_pipeline
 from sklearn.preprocessing import StandardScaler
 from sklearn.svm import LinearSVC
 
+from src.loggers import create_logger
 from src.utils import load_train_data, load_test_data, split2x_y
+
+cstm_logger = create_logger(__name__)
 
 
 class Trainer:
@@ -29,11 +32,11 @@ class Trainer:
         scores = dict()
 
         score = self.model.score(x_train, y_train)
-        print(f"Result score of trained model on train data: {score}")
+        cstm_logger.info(f"Result score of trained model on train data: {score}")
         scores["train_acc"] = score
 
         score = self.model.score(x_test, y_test)
-        print(f"Result score of trained model on test data: {score}")
+        cstm_logger.info(f"Result score of trained model on test data: {score}")
         scores["test_acc"] = score
 
         p = Path("./experiments/svc")
